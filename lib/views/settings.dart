@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -31,7 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Settings UI"),
+        title: const Text("Settings"),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -55,11 +53,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 subtitle: Text("English"),
               ),
               const Divider(),
-              const ListTile(
-                leading: Icon(Icons.cloud),
-                title: Text("Environment"),
-                subtitle: Text("Production"),
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -99,18 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     }),
               ),
               const Divider(),
-              ListTile(
-                leading: const Icon(Icons.fingerprint),
-                title: const Text("Use fingerprint"),
-                trailing: Switch(
-                    value: fingerprintSwitchVal,
-                    activeColor: Color.fromARGB(255, 4, 8, 250),
-                    onChanged: (val) {
-                      setState(() {
-                        fingerprintSwitchVal = val;
-                      });
-                    }),
-              ),
+              
               const Divider(),
               ListTile(
                 leading: const Icon(Icons.lock),
@@ -123,12 +105,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         changePassSwitchVal = val;
                       });
                     }),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text("Misc", style: headingStyle),
-                ],
               ),
               const ListTile(
                 leading: Icon(Icons.file_open_outlined),

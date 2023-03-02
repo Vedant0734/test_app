@@ -14,3 +14,5 @@ class TimerInProgress extends TimerEvent {
     print(seconds);
   }
 }
+
+class StopTimerEvent extends TimerEvent {}

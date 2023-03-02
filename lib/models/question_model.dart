@@ -1,5 +1,6 @@
 class Question {
-  final String questionId, quizId;
+  final String quizId;
+  final int questionId;
   final String description;
   final String option1;
   final String option2;
@@ -10,7 +11,7 @@ class Question {
 
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
-        questionId: json["id"],
+        questionId: int.parse(json["id"]),
         quizId: json["qId"],
         option1: json["opt1"],
         option2: json["opt2"],

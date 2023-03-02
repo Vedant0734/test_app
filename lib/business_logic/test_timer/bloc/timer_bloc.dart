@@ -1,20 +1,16 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 part 'timer_event.dart';
 part 'timer_state.dart';
 
 class TimerBloc extends Bloc<TimerEvent, TimerState> {
-  // late final Timer timer =
-  //     Timer(Duration(seconds: 10), () => add(TimeUpEvent()));
   late Stream timerStream;
-  // StreamSubscription<int>? _tickerSubscription;
+  // late final StreamSubscription<int> _tickerSubscription;
 
   TimerBloc({required int totalSeconds}) : super(TimerInitial(totalSeconds)) {
     timerStream = TimerProvider().secondsTick(totalSeconds);
-    // timer.on<TimerStarted>(_onStarted);
+    // _tickerSubscription = TimerProvider().secondsTick(totalSeconds).listen((event) { });
     timerStream.listen((seconds) {
       print("total seconds left" + seconds.toString());
       if (seconds == 0) {
@@ -31,34 +27,16 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
     on<TimerInProgress>((event, emit) {
       emit(TimerInProgressState(event.seconds));
     });
+    on<StopTimerEvent>((event, emit) {
+      // timerStream.
+    });
   }
 
   @override
   Future<void> close() {
-    // timerStream.
-    // _tickerSubscription?.cancel();
+    
     return super.close();
   }
-
-  // void _onStarted(TimerStarted event, Emitter<TimerState> emit) {
-  //   emit(TimerRunInProgress(event.duration));
-  //   _tickerSubscription?.cancel();
-  //   _tickerSubscription = _ticker
-  //       .tick(ticks: event.duration)
-  //       .listen((duration) => add(TimerTicked(duration: duration)));
-  // }
-
-  // void _onStopped(TimerStopped timerStopped, Emitter<TimerState> emit) {
-  //   emit(TimerStoppedState());
-  // }
-
-  // void _onTicked(TimerTicked event, Emitter<TimerState> emit) {
-  //   emit(
-  //     event.duration > 0
-  //         ? TimerRunInProgress(event.duration)
-  //         : TimerRunComplete(),
-  //   );
-  // }
 }
 
 class TimerProvider {

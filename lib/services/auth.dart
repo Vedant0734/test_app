@@ -9,7 +9,7 @@ import 'package:http/http.dart';
 import '../models/user.dart';
 // import '../models/user.dart';
 
-class AuthService {
+class FirebaseAuthService {
   final String serverAddress = 'http://192.168.43.149:8000';
   final Map<String, String> customHeaders = {
     "content-type": "application/json"
@@ -74,18 +74,12 @@ class AuthService {
     }
   }
 
-  Future<User> signUp(String uniqueId, String password) async {
-    await Future.delayed(Duration(seconds: 5));
-    throw "error";
-    try {} catch (e) {}
-  }
+  // Future signIn(String uniqueId, String password) async {
+  //   Response response = await post(Uri.parse("$serverAddress/users/signin"),
+  //       headers: customHeaders,
+  //       body: jsonEncode({"uniqueId": uniqueId, "password": password}));
 
-  Future signIn(String uniqueId, String password) async {
-    Response response = await post(Uri.parse("$serverAddress/users/signin"),
-        headers: customHeaders,
-        body: jsonEncode({"uniqueId": uniqueId, "password": password}));
-
-    if (response.statusCode == 200) {}
-    print(response.body);
-  }
+  //   if (response.statusCode == 200) {}
+  //   print(response.body);
+  // }
 }

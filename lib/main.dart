@@ -1,24 +1,24 @@
-import 'package:bgi_test_app/views/first_screen.dart';
-import 'package:bgi_test_app/views/routes.dart';
+import 'package:bgi_test_app/views/auth_screen.dart';
+import 'package:bgi_test_app/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import '../helper/authenticate.dart';
 import '../helper/constants.dart';
-import '../views/home.dart';
 import 'firebase_options.dart';
 
+//SchedulerBinding.instance.platformDispatcher.platformBrightness
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  // This widget is the root of your application.
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -26,7 +26,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    // initializeFirebaseApp();
     getLoggedInState();
     super.initState();
   }
@@ -48,13 +47,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BGI Test Invite',
+      title: 'BGI Test',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       onGenerateRoute: controller,
-      home: FirstScreen(),
+      home: const AuthenticationScreen(),
     );
   }
 }

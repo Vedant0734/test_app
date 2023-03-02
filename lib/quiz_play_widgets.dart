@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 
 class OptionTile extends StatefulWidget {
-  final String option, description, correctAnswer, optionSelected;
+  final String description;
+  final bool isSelected;
 
-  OptionTile(
-      {required this.description,
-      required this.correctAnswer,
-      required this.option,
-      required this.optionSelected});
+  const OptionTile({super.key, required this.description, required this.isSelected});
 
   @override
-  _OptionTileState createState() => _OptionTileState();
+  State<OptionTile> createState() => _OptionTileState();
 }
 
 class _OptionTileState extends State<OptionTile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Row(
         children: [
           Container(
@@ -25,27 +22,26 @@ class _OptionTileState extends State<OptionTile> {
             width: 28,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-                border: Border.all(
-                    color: widget.optionSelected == widget.description
-                        ? widget.description == widget.correctAnswer
-                            ? Colors.green.withOpacity(0.7)
-                            : Colors.red.withOpacity(0.7)
-                        : Colors.grey,
-                    width: 1.5),
-                color: widget.optionSelected == widget.description
-                    ? widget.description == widget.correctAnswer
-                        ? Colors.green.withOpacity(0.7)
-                        : Colors.red.withOpacity(0.7)
-                    : Colors.white,
-                borderRadius: BorderRadius.circular(24)),
-            child: Text(
-              widget.option,
-              style: TextStyle(
-                color: widget.optionSelected == widget.description
-                    ? Colors.white
-                    : Colors.grey,
-              ),
+              border: widget.isSelected ? Border.all(
+                  width: 1.5,
+                  color: widget.isSelected 
+                          ? Theme.of(context).brightness == Brightness.dark ? Colors.grey.withOpacity(0.7)
+                          : Colors.black54.withOpacity(0.7)
+                      : Colors.grey,
+                ) : const Border.fromBorderSide(BorderSide.none),
+              color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.grey.shade800.withOpacity(0.7)
+                      : Colors.grey.shade200.withOpacity(0.7),
+              borderRadius: BorderRadius.circular(24)
             ),
+            // child: Text(
+            //   widget.option,
+            //   style: TextStyle(
+            //     color: widget.optionSelected == widget.description
+            //         ? Colors.white
+            //         : Colors.grey,
+            //   ),
+            // ),
           ),
           SizedBox(
             width: 8,

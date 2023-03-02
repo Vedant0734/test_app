@@ -83,26 +83,6 @@ class DatabaseService {
     //     .get();
   }
 
-  Future<List<Map<String, dynamic>>> getQuestions(String quizId) async {
-    Response response =
-        await get(Uri.parse("$serverAddress/questions/$quizId"));
-    if (response.statusCode == 200) {
-      List result = jsonDecode(response.body);
-      List<Map<String, dynamic>> formattedResult =
-          result.map((e) => e as Map<String, dynamic>).toList();
-      return formattedResult;
-    } else if (response.statusCode == 404) {
-      throw QuizNotFoundError(quizId);
-    } else if (response.statusCode == 500) {
-      throw "Something went wrong";
-    } else {
-      throw "Response code did not match";
-    }
-  }
+  
 }
 
-class QuizNotFoundError {
-  final String quizId;
-
-  QuizNotFoundError(this.quizId);
-}

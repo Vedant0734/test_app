@@ -4,7 +4,7 @@ import '../business_logic/sign_up/sign_up_bloc.dart';
 import '../helper/constants.dart';
 import '../services/auth.dart';
 import '../services/database.dart';
-import '../views/home.dart';
+import 'home/admin_home.dart';
 import '../widget/widget.dart';
 
 class SignUp extends StatefulWidget {
@@ -16,7 +16,6 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUp extends State<SignUp> {
-  AuthService authService = AuthService();
   DatabaseService databaseService = DatabaseService();
   final _formKey = GlobalKey<FormState>();
 
@@ -28,7 +27,7 @@ class _SignUp extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SignUpBloc(authService: AuthService()),
+      create: (context) => SignUpBloc(),
       child: Builder(builder: (context) {
         return Scaffold(
           // backgroundColor: Colors.white,

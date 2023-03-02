@@ -8,3 +8,5 @@ class LoadQuestionsEvent extends QuizEvent {
 
   LoadQuestionsEvent(this.quizId);
 }
+
+class SubmitQuiz extends QuizEvent {}

@@ -1,6 +1,4 @@
-import 'package:animated_theme_switcher/animated_theme_switcher.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:bgi_test_app/models/user.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -9,13 +7,6 @@ class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key, required this.user});
   @override
   Widget build(BuildContext context) {
-    if (user == null) {
-      print(
-          "------------------------------------------------------------------\n\n\n\n\n");
-      print("user $user");
-      print(
-          "------------------------------------------------------------------\n\n\n\n\n");
-    }
     return Scaffold(
       appBar: AppBar(),
       body: ListView(
@@ -44,12 +35,12 @@ class ProfilePage extends StatelessWidget {
   Widget buildName(User user) => Column(
         children: [
           Text(
-            user.displayName ?? "name not found",
+            user.userName,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
           const SizedBox(height: 4),
           Text(
-            user.email ?? "not found",
+            user.phone,
             style: TextStyle(color: Colors.grey),
           )
         ],
@@ -66,7 +57,7 @@ class ProfilePage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              user.email ?? "email not found",
+              user.phone,
               style: TextStyle(fontSize: 16, height: 1.4),
             ),
           ],

@@ -17,7 +17,7 @@ class QuizInfo extends StatelessWidget {
       child: Builder(builder: (context) {
         return BlocListener<QuizBloc, QuizState>(
           listener: (context, state) {
-            if (state is QuizLoadInProgress) {
+            if (state is QuestionsLoadInProgress) {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(

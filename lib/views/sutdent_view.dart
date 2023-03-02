@@ -1,13 +1,13 @@
+import 'package:bgi_test_app/models/user.dart';
 import 'package:bgi_test_app/services/database.dart';
 import 'package:bgi_test_app/views/profile_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../models/quiz.dart';
 import '../views/create_quiz.dart';
 import '../views/quiz_play.dart';
 import '../widget/widget.dart';
-import 'routes.dart' as route;
+import '../routes.dart' as route;
 
 class Home extends StatefulWidget {
   final User user;
@@ -168,8 +168,8 @@ class _HomeState extends State<Home> {
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-                accountName: Text(widget.user.displayName ?? "Ved"),
-                accountEmail: Text(widget.user.email ?? "email not found")),
+                accountName: Text(widget.user.userName),
+                accountEmail: Text(widget.user.phone)),
 
             // const DrawerHeader(
             //   decoration: BoxDecoration(
@@ -251,8 +251,8 @@ class QuizTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => QuizPlay(quiz)));
+        // Navigator.push(
+            // context, MaterialPageRoute(builder: (context) => QuizPlay(quiz: quiz)));
       },
       child: Container(
         // ignore: prefer_const_constructors

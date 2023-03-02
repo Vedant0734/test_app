@@ -1,15 +1,15 @@
-import 'package:bgi_test_app/views/As_admin.dart';
+import 'package:bgi_test_app/views/sign_in_screens/signin_screen.dart';
 import 'package:bgi_test_app/views/signup.dart';
 import 'package:flutter/cupertino.dart';
 
-class FirstScreen extends StatefulWidget {
-  const FirstScreen({super.key});
+class AuthenticationScreen extends StatefulWidget {
+  const AuthenticationScreen({super.key});
 
   @override
-  State<FirstScreen> createState() => _FirstScreenState();
+  State<AuthenticationScreen> createState() => _AuthenticationScreenState();
 }
 
-class _FirstScreenState extends State<FirstScreen> {
+class _AuthenticationScreenState extends State<AuthenticationScreen> {
   late final PageController pageController;
 
   @override
@@ -30,7 +30,7 @@ class _FirstScreenState extends State<FirstScreen> {
       allowImplicitScrolling: false,
       controller: pageController,
       children: [
-        SignIn(
+        SignInScreen(
           pageController: pageController,
         ),
         SignUp(

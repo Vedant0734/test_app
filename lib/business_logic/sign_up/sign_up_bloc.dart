@@ -1,16 +1,14 @@
+import 'package:bgi_test_app/business_logic/sign_in/repo.dart';
 import 'package:bgi_test_app/models/user.dart';
-import 'package:bgi_test_app/services/auth.dart';
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
-
-import '../../helper/constants.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'sign_up_event.dart';
 part 'sign_up_state.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
-  AuthService authService;
-  SignUpBloc({required this.authService}) : super(SignUpInitial()) {
+  final AuthenticationRepository _authenticationRepository = AuthenticationRepository();
+  SignUpBloc() : super(SignUpInitial()) {
     on<SignUpRequested>((event, emit) async {
       emit(SignUpInProgressState());
       try {
@@ -28,7 +26,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
         // Constants.saveUserLoggedInSharedPreference(true);
         // });
-        User user = await authService.signUp(event.uniqueId, event.password);
+        User user = await _authenticationRepository.signUp(event.uniqueId, event.password);
         emit(SignUpSuccessState(user));
       } catch (e) {
         emit(SignUpFailedState());

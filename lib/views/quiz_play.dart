@@ -2,24 +2,59 @@ import 'package:bgi_test_app/business_logic/test_timer/bloc/timer_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../models/question_model.dart';
 import '../models/quiz.dart';
-import '../services/database.dart';
 import '../widget/widget.dart';
 import '../quiz_play_widgets.dart';
 
 class QuizPlay extends StatefulWidget {
   final Quiz quiz;
-  const QuizPlay(this.quiz, {super.key});
+  final List<Question> questions;
+  const QuizPlay({required this.quiz, super.key, required this.questions});
 
   @override
   State<QuizPlay> createState() => _QuizPlayState();
 }
 
-class _QuizPlayState extends State<QuizPlay> {
+class _QuizPlayState extends State<QuizPlay> with WidgetsBindingObserver {
+  late final PageController pageController;
+
+  @override
+  void initState() {
+    pageController = PageController(initialPage: 0,);
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("app in resumed");
+        break;
+      case AppLifecycleState.inactive:
+        print("app in inactive");
+        break;
+      case AppLifecycleState.paused:
+        print("app in paused");
+        break;
+      case AppLifecycleState.detached:
+        print("app in detached");
+        break;
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TimerBloc(totalSeconds: 20),
+      create: (context) => TimerBloc(totalSeconds: widget.quiz.timeInSeconds),
       child: Builder(builder: (context) {
         return BlocListener<TimerBloc, TimerState>(
           listener: (context, state) {
@@ -63,7 +98,6 @@ class _QuizPlayState extends State<QuizPlay> {
               centerTitle: true,
               backgroundColor: Colors.transparent,
               systemOverlayStyle: SystemUiOverlayStyle.light,
-              // brightness: Brightness.light,
               elevation: 0.0,
               actions: [
                 BlocBuilder<TimerBloc, TimerState>(
@@ -77,43 +111,43 @@ class _QuizPlayState extends State<QuizPlay> {
               ],
             ),
             body: SingleChildScrollView(
-              child: Container(
-                child: Column(
-                  children: [
-                    InfoHeader(
-                      id: widget.quiz.id,
-                      length: questionSnaphot.docs.length,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    questionSnaphot.docs == null
-                        ? Container(
-                            child: const Center(
-                              child: Text("No Data"),
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: questionSnaphot.docs.length,
-                            shrinkWrap: true,
-                            physics: const ClampingScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return Column(
-                                children: [
-                                  QuizPlayTile(
-                                    questionModel:
-                                        getQuestionModelFromDatasnapshot(
-                                            questionSnaphot.docs[index]),
-                                    index: index,
-                                  ),
-                                  SizedBox(
-                                    height: 15.0,
-                                  )
-                                ],
-                              );
-                            })
-                  ],
-                ),
+              child: Column(
+                children: [
+                  // InfoHeader(
+                  //   id: widget.quiz.id,
+                  //   length: questionSnaphot.docs.length,
+                  // ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  PageView.builder(
+                    controller: pageController,
+                    itemCount: widget.questions.length,
+                    physics: const ClampingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return QuestionTile(questionModel: widget.questions[index], index: index);
+                    },
+                  ),
+                  //  ListView.builder(
+                  //         itemCount: questionSnaphot.docs.length,
+                  //         shrinkWrap: true,
+                  //         physics: const ClampingScrollPhysics(),
+                  //         itemBuilder: (context, index) {
+                  //           return Column(
+                  //             children: [
+                  //               QuestionTile(
+                  //                 questionModel:
+                  //                     getQuestionModelFromDatasnapshot(
+                  //                         questionSnaphot.docs[index]),
+                  //                 index: index,
+                  //               ),
+                  //               SizedBox(
+                  //                 height: 15.0,
+                  //               )
+                  //             ],
+                  //           );
+                  //         })
+                ],
               ),
             ),
           ),
@@ -123,57 +157,57 @@ class _QuizPlayState extends State<QuizPlay> {
   }
 }
 
-class InfoHeader extends StatefulWidget {
-  final int length;
-  final String id;
-  const InfoHeader({super.key, required this.length, required this.id});
+// class InfoHeader extends StatefulWidget {
+//   final int length;
+//   final String id;
+//   const InfoHeader({super.key, required this.length, required this.id});
 
-  @override
-  _InfoHeaderState createState() => _InfoHeaderState();
-}
+//   @override
+//   _InfoHeaderState createState() => _InfoHeaderState();
+// }
 
-class _InfoHeaderState extends State<InfoHeader> {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        // future: databaseService.getQuestionData(widget.id),
-        builder: (context, snapshot) {
-      return snapshot.hasData
-          ? Container(
-              height: 40,
-              margin: const EdgeInsets.only(left: 14),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                children: <Widget>[
-                  NoOfQuestionTile(
-                    text: "Total",
-                    number: widget.length,
-                  ),
-                  NoOfQuestionTile(
-                    text: "NotAttempted",
-                    number: _notAttempted,
-                  ),
-                ],
-              ),
-            )
-          : Container();
-    });
-  }
-}
+// class _InfoHeaderState extends State<InfoHeader> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return FutureBuilder(
+//         // future: databaseService.getQuestionData(widget.id),
+//         builder: (context, snapshot) {
+//       return snapshot.hasData
+//           ? Container(
+//               height: 40,
+//               margin: const EdgeInsets.only(left: 14),
+//               child: ListView(
+//                 scrollDirection: Axis.horizontal,
+//                 shrinkWrap: true,
+//                 children: <Widget>[
+//                   NoOfQuestionTile(
+//                     text: "Total",
+//                     number: widget.length,
+//                   ),
+//                   NoOfQuestionTile(
+//                     text: "NotAttempted",
+//                     number: _notAttempted,
+//                   ),
+//                 ],
+//               ),
+//             )
+//           : Container();
+//     });
+//   }
+// }
 
-class QuizPlayTile extends StatefulWidget {
+class QuestionTile extends StatefulWidget {
+  // final Quiz quiz;
   final Question questionModel;
   final int index;
 
-  const QuizPlayTile(
-      {super.key, required this.questionModel, required this.index});
+  const QuestionTile({super.key, required this.questionModel, required this.index});
 
   @override
-  _QuizPlayTileState createState() => _QuizPlayTileState();
+  State<QuestionTile> createState() => _QuestionTileState();
 }
 
-class _QuizPlayTileState extends State<QuizPlayTile> {
+class _QuestionTileState extends State<QuestionTile> {
   String optionSelected = "";
 
   @override
@@ -185,7 +219,7 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              "Q${widget.index + 1} ${widget.questionModel.question}",
+              "Q${widget.index + 1} ${widget.questionModel.description}",
               style:
                   TextStyle(fontSize: 18, color: Colors.black.withOpacity(0.8)),
             ),
@@ -195,31 +229,30 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
           ),
           GestureDetector(
             onTap: () {
-              if (!widget.questionModel.answered) {
+              if (!widget.questionModel.isAnswered) {
+
                 ///correct
-                if (widget.questionModel.option1 ==
-                    widget.questionModel.correctOption) {
-                  setState(() {
-                    optionSelected = widget.questionModel.option1;
-                    widget.questionModel.answered = true;
-                    _correct = _correct + 1;
-                    _notAttempted = _notAttempted + 1;
-                  });
-                } else {
-                  setState(() {
-                    optionSelected = widget.questionModel.option1;
-                    widget.questionModel.answered = true;
-                    _incorrect = _incorrect + 1;
-                    _notAttempted = _notAttempted - 1;
-                  });
-                }
+                // if (widget.questionModel.option1 ==
+                //     widget.questionModel.correctOption) {
+                //   setState(() {
+                //     optionSelected = widget.questionModel.option1;
+                //     widget.questionModel.isAnswered = true;
+                //     _correct = _correct + 1;
+                //     _notAttempted = _notAttempted + 1;
+                //   });
+                // } else {
+                //   setState(() {
+                //     optionSelected = widget.questionModel.option1;
+                //     widget.questionModel.isAnswered = true;
+                //     _incorrect = _incorrect + 1;
+                //     _notAttempted = _notAttempted - 1;
+                //   });
+                // }
               }
             },
             child: OptionTile(
-              option: "A",
+              isSelected: false,
               description: "${widget.questionModel.option1}",
-              correctAnswer: widget.questionModel.correctOption,
-              optionSelected: optionSelected,
             ),
           ),
           const SizedBox(
@@ -227,31 +260,29 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
           ),
           GestureDetector(
             onTap: () {
-              if (!widget.questionModel.answered) {
+              if (!widget.questionModel.isAnswered) {
                 ///correct
-                if (widget.questionModel.option2 ==
-                    widget.questionModel.correctOption) {
-                  setState(() {
-                    optionSelected = widget.questionModel.option2;
-                    widget.questionModel.answered = true;
-                    _correct = _correct + 1;
-                    _notAttempted = _notAttempted + 1;
-                  });
-                } else {
-                  setState(() {
-                    optionSelected = widget.questionModel.option2;
-                    widget.questionModel.answered = true;
-                    _incorrect = _incorrect + 1;
-                    _notAttempted = _notAttempted - 1;
-                  });
-                }
+                // if (widget.questionModel.option2 ==
+                //     widget.questionModel.correctOption) {
+                //   setState(() {
+                //     optionSelected = widget.questionModel.option2;
+                //     widget.questionModel.isAnswered = true;
+                //     _correct = _correct + 1;
+                //     _notAttempted = _notAttempted + 1;
+                //   });
+                // } else {
+                //   setState(() {
+                //     optionSelected = widget.questionModel.option2;
+                //     widget.questionModel.isAnswered = true;
+                //     _incorrect = _incorrect + 1;
+                //     _notAttempted = _notAttempted - 1;
+                //   });
+                // }
               }
             },
             child: OptionTile(
-              option: "B",
               description: "${widget.questionModel.option2}",
-              correctAnswer: widget.questionModel.correctOption,
-              optionSelected: optionSelected,
+              isSelected: false,
             ),
           ),
           const SizedBox(
@@ -259,63 +290,60 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
           ),
           GestureDetector(
             onTap: () {
-              if (!widget.questionModel.answered) {
+              if (!widget.questionModel.isAnswered) {
                 ///correct
-                if (widget.questionModel.option3 ==
-                    widget.questionModel.correctOption) {
-                  setState(() {
-                    optionSelected = widget.questionModel.option3;
-                    widget.questionModel.answered = true;
-                    _correct = _correct + 1;
-                    _notAttempted = _notAttempted + 1;
-                  });
-                } else {
-                  setState(() {
-                    optionSelected = widget.questionModel.option3;
-                    widget.questionModel.answered = true;
-                    _incorrect = _incorrect + 1;
-                    _notAttempted = _notAttempted - 1;
-                  });
-                }
+                // if (widget.questionModel.option3 ==
+                //     widget.questionModel.correctOption) {
+                //   setState(() {
+                //     optionSelected = widget.questionModel.option3;
+                //     widget.questionModel.isAnswered = true;
+                //     _correct = _correct + 1;
+                //     _notAttempted = _notAttempted + 1;
+                //   });
+                // } else {
+                //   setState(() {
+                //     optionSelected = widget.questionModel.option3;
+                //     widget.questionModel.isAnswered = true;
+                //     _incorrect = _incorrect + 1;
+                //     _notAttempted = _notAttempted - 1;
+                //   });
+                // }
               }
             },
             child: OptionTile(
-              option: "C",
               description: "${widget.questionModel.option3}",
-              correctAnswer: widget.questionModel.correctOption,
-              optionSelected: optionSelected,
+              isSelected: false,
             ),
           ),
           const SizedBox(
             height: 4,
           ),
           GestureDetector(
+
             onTap: () {
-              if (!widget.questionModel.answered) {
+              if (!widget.questionModel.isAnswered) {
                 ///correct
-                if (widget.questionModel.option4 ==
-                    widget.questionModel.correctOption) {
-                  setState(() {
-                    optionSelected = widget.questionModel.option4;
-                    widget.questionModel.answered = true;
-                    _correct = _correct + 1;
-                    _notAttempted = _notAttempted + 1;
-                  });
-                } else {
-                  setState(() {
-                    optionSelected = widget.questionModel.option4;
-                    widget.questionModel.answered = true;
-                    _incorrect = _incorrect + 1;
-                    _notAttempted = _notAttempted - 1;
-                  });
-                }
+                // if (widget.questionModel.option4 ==
+                //     widget.questionModel.correctOption) {
+                //   setState(() {
+                //     optionSelected = widget.questionModel.option4;
+                //     widget.questionModel.isAnswered = true;
+                //     _correct = _correct + 1;
+                //     _notAttempted = _notAttempted + 1;
+                //   });
+                // } else {
+                //   setState(() {
+                //     optionSelected = widget.questionModel.option4;
+                //     widget.questionModel.isAnswered = true;
+                //     _incorrect = _incorrect + 1;
+                //     _notAttempted = _notAttempted - 1;
+                //   });
+                // }
               }
             },
             child: OptionTile(
-              option: "D",
               description: "${widget.questionModel.option4}",
-              correctAnswer: widget.questionModel.correctOption,
-              optionSelected: optionSelected,
+              isSelected: false,
             ),
           ),
           const SizedBox(
@@ -327,11 +355,11 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
   }
 }
 
-class QuestionPage extends StatelessWidget {
-  const QuestionPage({super.key});
+// class QuestionPage extends StatelessWidget {
+//   const QuestionPage({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container();
+//   }
+// }
