@@ -4,69 +4,90 @@ class OptionTile extends StatefulWidget {
   final String description;
   final bool isSelected;
 
-  const OptionTile({super.key, required this.description, required this.isSelected});
+  const OptionTile(
+      {super.key, required this.description, required this.isSelected});
 
   @override
   State<OptionTile> createState() => _OptionTileState();
 }
 
 class _OptionTileState extends State<OptionTile> {
+  late bool selected;
+
+  @override
+  void initState() {
+    selected = widget.isSelected;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Row(
-        children: [
-          Container(
-            height: 28,
-            width: 28,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              border: widget.isSelected ? Border.all(
-                  width: 1.5,
-                  color: widget.isSelected 
-                          ? Theme.of(context).brightness == Brightness.dark ? Colors.grey.withOpacity(0.7)
-                          : Colors.black54.withOpacity(0.7)
-                      : Colors.grey,
-                ) : const Border.fromBorderSide(BorderSide.none),
-              color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey.shade800.withOpacity(0.7)
-                      : Colors.grey.shade200.withOpacity(0.7),
-              borderRadius: BorderRadius.circular(24)
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selected = !selected;
+          print(selected);
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: 10.0,
+                  color: Colors.grey.withOpacity(0.3),
+                  offset: Offset(3, 6))
+            ],
+            color: Theme.of(context).brightness == Brightness.dark
+                ? selected
+                    ? Colors.grey.shade800.withOpacity(0.7)
+                    : Colors.black
+                : selected
+                    ? Colors.grey.shade200.withOpacity(0.7)
+                    : Colors.white54,
+            borderRadius: BorderRadius.circular(8)),
+        child: Row(
+          children: [
+            Container(
+              height: 15,
+              width: 15,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                      color: Theme.of(context).primaryColor, width: 0.8)),
+              child: AnimatedOpacity(
+                opacity: selected ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 300),
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Theme.of(context).primaryColorDark,
+                  ),
+                  margin: EdgeInsets.all(1.0),
+                ),
+              ),
             ),
-            // child: Text(
-            //   widget.option,
-            //   style: TextStyle(
-            //     color: widget.optionSelected == widget.description
-            //         ? Colors.white
-            //         : Colors.grey,
-            //   ),
-            // ),
-          ),
-          SizedBox(
-            width: 8,
-          ),
-          Text(
-            widget.description,
-            style: TextStyle(fontSize: 17, color: Colors.black54),
-          )
-        ],
+            const SizedBox(
+              width: 25,
+            ),
+            Text(
+              widget.description,
+              style: TextStyle(fontSize: 17, color: Colors.black),
+            )
+          ],
+        ),
       ),
     );
   }
 }
 
-class NoOfQuestionTile extends StatefulWidget {
+class NoOfQuestionTile extends StatelessWidget {
   final String text;
   final int number;
 
-  NoOfQuestionTile({required this.text, required this.number});
+  const NoOfQuestionTile({super.key, required this.text, required this.number});
 
-  @override
-  _NoOfQuestionTileState createState() => _NoOfQuestionTileState();
-}
-
-class _NoOfQuestionTileState extends State<NoOfQuestionTile> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -81,7 +102,7 @@ class _NoOfQuestionTileState extends State<NoOfQuestionTile> {
                     bottomLeft: Radius.circular(14)),
                 color: Colors.blue),
             child: Text(
-              "${widget.number}",
+              "$number",
               style: TextStyle(color: Colors.white),
             ),
           ),
@@ -94,7 +115,7 @@ class _NoOfQuestionTileState extends State<NoOfQuestionTile> {
                 ),
                 color: Colors.black54),
             child: Text(
-              widget.text,
+              text,
               style: TextStyle(color: Colors.white),
             ),
           )

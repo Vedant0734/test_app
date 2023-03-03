@@ -1,3 +1,4 @@
+import 'package:bgi_test_app/business_logic/quiz/bloc/quiz_bloc.dart';
 import 'package:bgi_test_app/business_logic/test_timer/bloc/timer_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +22,9 @@ class _QuizPlayState extends State<QuizPlay> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    pageController = PageController(initialPage: 0,);
+    pageController = PageController(
+      initialPage: 0,
+    );
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
@@ -94,61 +97,56 @@ class _QuizPlayState extends State<QuizPlay> with WidgetsBindingObserver {
           },
           child: Scaffold(
             appBar: AppBar(
-              title: AppLogo(),
-              centerTitle: true,
+              title: Row(
+                children: [
+                  BlocProvider.value(
+                    value: context.read<QuizBloc>(),
+                    child: NoOfQuestionTile(
+                      text: "Total",
+                      number: 4,
+                    ),
+                  ),
+                  BlocBuilder<TimerBloc, TimerState>(
+                    builder: (context, state) {
+                      return Text(
+                        state.seconds.toString(),
+                        style: TextStyle(color: Colors.black, fontSize: 20),
+                      );
+                    },
+                  ),
+                  BlocProvider.value(
+                    value: context.read<QuizBloc>(),
+                    child: NoOfQuestionTile(
+                      text: "Not Attempted",
+                      number: 4,
+                    ),
+                  ),
+                ],
+              ),
+              leading: null,
+              // centerTitle: true,
               backgroundColor: Colors.transparent,
               systemOverlayStyle: SystemUiOverlayStyle.light,
               elevation: 0.0,
-              actions: [
-                BlocBuilder<TimerBloc, TimerState>(
-                  builder: (context, state) {
-                    return Text(
-                      state.seconds.toString(),
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    );
-                  },
-                )
-              ],
+              // actions: [
+              //   BlocBuilder<TimerBloc, TimerState>(
+              //     builder: (context, state) {
+              //       return Text(
+              //         state.seconds.toString(),
+              //         style: TextStyle(color: Colors.black, fontSize: 20),
+              //       );
+              //     },
+              //   )
+              // ],
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  // InfoHeader(
-                  //   id: widget.quiz.id,
-                  //   length: questionSnaphot.docs.length,
-                  // ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  PageView.builder(
-                    controller: pageController,
-                    itemCount: widget.questions.length,
-                    physics: const ClampingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return QuestionTile(questionModel: widget.questions[index], index: index);
-                    },
-                  ),
-                  //  ListView.builder(
-                  //         itemCount: questionSnaphot.docs.length,
-                  //         shrinkWrap: true,
-                  //         physics: const ClampingScrollPhysics(),
-                  //         itemBuilder: (context, index) {
-                  //           return Column(
-                  //             children: [
-                  //               QuestionTile(
-                  //                 questionModel:
-                  //                     getQuestionModelFromDatasnapshot(
-                  //                         questionSnaphot.docs[index]),
-                  //                 index: index,
-                  //               ),
-                  //               SizedBox(
-                  //                 height: 15.0,
-                  //               )
-                  //             ],
-                  //           );
-                  //         })
-                ],
-              ),
+            body: PageView.builder(
+              controller: pageController,
+              itemCount: widget.questions.length,
+              physics: const ClampingScrollPhysics(),
+              itemBuilder: (context, index) {
+                return QuestionTile(
+                    questionModel: widget.questions[index], index: index);
+              },
             ),
           ),
         );
@@ -157,51 +155,35 @@ class _QuizPlayState extends State<QuizPlay> with WidgetsBindingObserver {
   }
 }
 
-// class InfoHeader extends StatefulWidget {
-//   final int length;
-//   final String id;
-//   const InfoHeader({super.key, required this.length, required this.id});
+class InfoHeader extends StatelessWidget {
+  final int totalQuestions, unattemptedQuestions;
+  const InfoHeader(
+      {super.key,
+      required this.totalQuestions,
+      required this.unattemptedQuestions});
 
-//   @override
-//   _InfoHeaderState createState() => _InfoHeaderState();
-// }
-
-// class _InfoHeaderState extends State<InfoHeader> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return FutureBuilder(
-//         // future: databaseService.getQuestionData(widget.id),
-//         builder: (context, snapshot) {
-//       return snapshot.hasData
-//           ? Container(
-//               height: 40,
-//               margin: const EdgeInsets.only(left: 14),
-//               child: ListView(
-//                 scrollDirection: Axis.horizontal,
-//                 shrinkWrap: true,
-//                 children: <Widget>[
-//                   NoOfQuestionTile(
-//                     text: "Total",
-//                     number: widget.length,
-//                   ),
-//                   NoOfQuestionTile(
-//                     text: "NotAttempted",
-//                     number: _notAttempted,
-//                   ),
-//                 ],
-//               ),
-//             )
-//           : Container();
-//     });
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<QuizBloc, QuizState>(builder: (context, snapshot) {
+      return Row(
+        children: [
+          NoOfQuestionTile(
+            text: "NotAttempted",
+            number: unattemptedQuestions,
+          ),
+        ],
+      );
+    });
+  }
+}
 
 class QuestionTile extends StatefulWidget {
   // final Quiz quiz;
   final Question questionModel;
   final int index;
 
-  const QuestionTile({super.key, required this.questionModel, required this.index});
+  const QuestionTile(
+      {super.key, required this.questionModel, required this.index});
 
   @override
   State<QuestionTile> createState() => _QuestionTileState();
@@ -225,141 +207,45 @@ class _QuestionTileState extends State<QuestionTile> {
             ),
           ),
           const SizedBox(
-            height: 12,
-          ),
-          GestureDetector(
-            onTap: () {
-              if (!widget.questionModel.isAnswered) {
-
-                ///correct
-                // if (widget.questionModel.option1 ==
-                //     widget.questionModel.correctOption) {
-                //   setState(() {
-                //     optionSelected = widget.questionModel.option1;
-                //     widget.questionModel.isAnswered = true;
-                //     _correct = _correct + 1;
-                //     _notAttempted = _notAttempted + 1;
-                //   });
-                // } else {
-                //   setState(() {
-                //     optionSelected = widget.questionModel.option1;
-                //     widget.questionModel.isAnswered = true;
-                //     _incorrect = _incorrect + 1;
-                //     _notAttempted = _notAttempted - 1;
-                //   });
-                // }
-              }
-            },
-            child: OptionTile(
-              isSelected: false,
-              description: "${widget.questionModel.option1}",
-            ),
-          ),
-          const SizedBox(
-            height: 4,
-          ),
-          GestureDetector(
-            onTap: () {
-              if (!widget.questionModel.isAnswered) {
-                ///correct
-                // if (widget.questionModel.option2 ==
-                //     widget.questionModel.correctOption) {
-                //   setState(() {
-                //     optionSelected = widget.questionModel.option2;
-                //     widget.questionModel.isAnswered = true;
-                //     _correct = _correct + 1;
-                //     _notAttempted = _notAttempted + 1;
-                //   });
-                // } else {
-                //   setState(() {
-                //     optionSelected = widget.questionModel.option2;
-                //     widget.questionModel.isAnswered = true;
-                //     _incorrect = _incorrect + 1;
-                //     _notAttempted = _notAttempted - 1;
-                //   });
-                // }
-              }
-            },
-            child: OptionTile(
-              description: "${widget.questionModel.option2}",
-              isSelected: false,
-            ),
-          ),
-          const SizedBox(
-            height: 4,
-          ),
-          GestureDetector(
-            onTap: () {
-              if (!widget.questionModel.isAnswered) {
-                ///correct
-                // if (widget.questionModel.option3 ==
-                //     widget.questionModel.correctOption) {
-                //   setState(() {
-                //     optionSelected = widget.questionModel.option3;
-                //     widget.questionModel.isAnswered = true;
-                //     _correct = _correct + 1;
-                //     _notAttempted = _notAttempted + 1;
-                //   });
-                // } else {
-                //   setState(() {
-                //     optionSelected = widget.questionModel.option3;
-                //     widget.questionModel.isAnswered = true;
-                //     _incorrect = _incorrect + 1;
-                //     _notAttempted = _notAttempted - 1;
-                //   });
-                // }
-              }
-            },
-            child: OptionTile(
-              description: "${widget.questionModel.option3}",
-              isSelected: false,
-            ),
-          ),
-          const SizedBox(
-            height: 4,
-          ),
-          GestureDetector(
-
-            onTap: () {
-              if (!widget.questionModel.isAnswered) {
-                ///correct
-                // if (widget.questionModel.option4 ==
-                //     widget.questionModel.correctOption) {
-                //   setState(() {
-                //     optionSelected = widget.questionModel.option4;
-                //     widget.questionModel.isAnswered = true;
-                //     _correct = _correct + 1;
-                //     _notAttempted = _notAttempted + 1;
-                //   });
-                // } else {
-                //   setState(() {
-                //     optionSelected = widget.questionModel.option4;
-                //     widget.questionModel.isAnswered = true;
-                //     _incorrect = _incorrect + 1;
-                //     _notAttempted = _notAttempted - 1;
-                //   });
-                // }
-              }
-            },
-            child: OptionTile(
-              description: "${widget.questionModel.option4}",
-              isSelected: false,
-            ),
-          ),
-          const SizedBox(
             height: 20,
           ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: ListView(
+                scrollDirection: Axis.vertical,
+                children: [
+                  OptionTile(
+                    isSelected: false,
+                    description: "${widget.questionModel.option1}",
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  OptionTile(
+                    isSelected: false,
+                    description: "${widget.questionModel.option2}",
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  OptionTile(
+                    isSelected: false,
+                    description: "${widget.questionModel.option3}",
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  OptionTile(
+                    isSelected: false,
+                    description: "${widget.questionModel.option4}",
+                  ),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );
   }
 }
-
-// class QuestionPage extends StatelessWidget {
-//   const QuestionPage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container();
-//   }
-// }

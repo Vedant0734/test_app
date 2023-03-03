@@ -1,4 +1,5 @@
 import 'package:bgi_test_app/models/quiz.dart';
+import 'package:bgi_test_app/views/quiz_play.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -31,6 +32,16 @@ class QuizInfo extends StatelessWidget {
                   ),
                 ),
               );
+            } else if (state is QuestionsLoadedState) {
+              final quizBloc = context.read<QuizBloc>();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider.value(
+                      value: quizBloc,
+                      child: QuizPlay(quiz: quiz, questions: state.questions),
+                    ),
+                  ));
             }
           },
           child: Scaffold(

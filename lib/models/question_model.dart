@@ -11,7 +11,7 @@ class Question {
 
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
-        questionId: int.parse(json["id"]),
+        questionId: json["id"],
         quizId: json["qId"],
         option1: json["opt1"],
         option2: json["opt2"],

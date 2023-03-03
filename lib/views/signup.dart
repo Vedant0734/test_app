@@ -1,11 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import '../business_logic/sign_up/sign_up_bloc.dart';
-import '../helper/constants.dart';
-import '../services/auth.dart';
 import '../services/database.dart';
-import 'home/admin_home.dart';
-import '../widget/widget.dart';
 
 class SignUp extends StatefulWidget {
   final PageController pageController;
