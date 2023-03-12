@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'business_logic/quiz/bloc/quiz_bloc.dart';
+import 'business_logic/qustions/bloc/questions_bloc.dart';
 
 class OptionTile extends StatefulWidget {
   final String description;
-  final bool isSelected;
+  final int questionId;
 
   const OptionTile(
-      {super.key, required this.description, required this.isSelected});
+      {super.key,
+      required this.questionId,
+      required this.description});
 
   @override
   State<OptionTile> createState() => _OptionTileState();
 }
 
 class _OptionTileState extends State<OptionTile> {
-  late bool selected;
-
-  @override
-  void initState() {
-    selected = widget.isSelected;
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          selected = !selected;
-          print(selected);
-        });
+        final quizState = context.read<QuizBloc>().state;
+        if(quizState is! QuizSubmitFailed){
+          context.read<QuestionsBloc>().add(QuestionAnswered(
+            answer: widget.description, questionId: widget.questionId));
+        }
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -36,45 +35,53 @@ class _OptionTileState extends State<OptionTile> {
               BoxShadow(
                   blurRadius: 10.0,
                   color: Colors.grey.withOpacity(0.3),
-                  offset: Offset(3, 6))
+                  offset: const Offset(3, 6))
             ],
             color: Theme.of(context).brightness == Brightness.dark
-                ? selected
                     ? Colors.grey.shade800.withOpacity(0.7)
-                    : Colors.black
-                : selected
-                    ? Colors.grey.shade200.withOpacity(0.7)
                     : Colors.white54,
             borderRadius: BorderRadius.circular(8)),
         child: Row(
           children: [
-            Container(
-              height: 15,
-              width: 15,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                      color: Theme.of(context).primaryColor, width: 0.8)),
-              child: AnimatedOpacity(
-                opacity: selected ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 300),
-                child: Container(
+            BlocBuilder<QuestionsBloc, QuestionsState>(
+              buildWhen: (previous, current) {
+                if(current is AnswerUpdatedState && current.updatedQuestionId == widget.questionId){
+                  return true;
+                }
+                return false;
+              },
+              builder: (context, state) {
+                final currentQuestion = state.questions.firstWhere((element) => element.questionId == widget.questionId);
+                bool isSelected = currentQuestion.answer == widget.description;
+                return Container(
+                  height: 22,
+                  width: 22,
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).primaryColorDark,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                          color: Theme.of(context).primaryColor, width: 2.0)),
+                  child: AnimatedOpacity(
+                    opacity:
+                        isSelected
+                            ? 1.0
+                            : 0.0,
+                    duration: const Duration(milliseconds: 300),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Theme.of(context).primaryColorDark,
+                      ),
+                      margin: const EdgeInsets.all(1.5),
+                    ),
                   ),
-                  margin: EdgeInsets.all(1.0),
-                ),
-              ),
+                );
+              },
             ),
             const SizedBox(
               width: 25,
             ),
-            Text(
-              widget.description,
-              style: TextStyle(fontSize: 17, color: Colors.black),
-            )
+            Flexible(child: Text(widget.description, style: const TextStyle(fontSize: 18))),
           ],
         ),
       ),
@@ -96,7 +103,7 @@ class NoOfQuestionTile extends StatelessWidget {
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(14),
                     bottomLeft: Radius.circular(14)),

@@ -5,7 +5,7 @@ import 'package:bgi_test_app/views/quiz_info.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../helper/widgets/custom_drawer.dart';
-import '../../models/quiz.dart';
+import '../../business_logic/quiz/quiz.dart';
 import '../../widget/widget.dart';
 import '../../routes.dart' as route;
 

@@ -10,10 +10,6 @@ import '../models/user.dart';
 // import '../models/user.dart';
 
 class FirebaseAuthService {
-  final String serverAddress = 'http://192.168.43.149:8000';
-  final Map<String, String> customHeaders = {
-    "content-type": "application/json"
-  };
   final fb.FirebaseAuth _auth = fb.FirebaseAuth.instance;
   final app = Firebase.initializeApp();
   // User? _userFromFirebaseUser(fb.User? user) {

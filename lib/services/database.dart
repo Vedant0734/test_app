@@ -8,7 +8,7 @@ import 'package:http/http.dart';
 class DatabaseService {
   // final String uid;
   late FirebaseFirestore database;
-  final String serverAddress = 'http://192.168.43.149:8000';
+  // final String serverAddress = 'http://192.168.43.149:8000';
   // DatabaseService({required this.uid});
   DatabaseService() {
     database = FirebaseFirestore.instance;

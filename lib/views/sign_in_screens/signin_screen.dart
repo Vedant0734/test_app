@@ -1,3 +1,4 @@
+import 'package:bgi_test_app/enums/user_type.dart';
 import 'package:bgi_test_app/views/home/student_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,18 +18,30 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
 
-  TextEditingController emailEditingController = TextEditingController();
-  TextEditingController passwordEditingController = TextEditingController();
+  late final TextEditingController emailEditingController;
+  late final TextEditingController passwordEditingController;
+
+  @override
+  void initState() {
+    emailEditingController = TextEditingController();
+    passwordEditingController  = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    emailEditingController.dispose();
+    passwordEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(
-    //     const SystemUiOverlayStyle(statusBarColor: Colors.white));
     return BlocProvider(
       create: (context) => SignInBloc(),
       child: Builder(builder: (context) {
         return BlocListener<SignInBloc, SignInState>(
-          listener: (context, state) {
+          listener: (context, state) {            
             if(state is SignInInProgressState){
               showDialog(context: context, builder: (context) => AlertDialog(
                 content: Column(
@@ -40,25 +53,34 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),);
             } else if(state is SignInSuccessState){
-              Navigator.pushAndRemoveUntil(
+              if(state.user.userType == UserType.teacher){
+                Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AdminHome(user: state.user)),
+                (route) => false);
+              } else {
+                Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                     builder: (context) => StudentHome(user: state.user)),
                 (route) => false);
+              }
+              
             } else if(state is SignInFailedState){
-              Navigator.pop(context);
+              if(ModalRoute.of(context)?.isCurrent != true){
+                Navigator.pop(context);
+              }
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text("Failed: ${state.reason}")
               ));
             }
           },
           child: Scaffold(
-            backgroundColor: Color.fromARGB(255, 255, 255, 255),
             appBar: AppBar(
               title: AppLogo(),
               elevation: 0.0,
               backgroundColor: Colors.transparent,
-              //brightness: Brightness.li,
             ),
             body: Container(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -96,12 +118,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                 uniqueId: emailEditingController.text.trim(),
                                 password:
                                     passwordEditingController.text.trim()));
-                            // User user = await _authService.signInScreenEmailAndPass(
-                            //     emailEditingController.text.trim(),
-                            //     passwordEditingController.text.trim());
-                            // _authService.signInScreen(emailEditingController.text.trim(),
-                            //     passwordEditingController.text.trim());
-                            
                           },
                           child: const Text(
                             "Sign In",
@@ -115,9 +131,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text('Don\'t have an account? ',
-                                style: TextStyle(
-                                    color: Color.fromARGB(221, 26, 24, 24),
-                                    fontSize: 17)),
+                                style: TextStyle(fontSize: 17)),
                             GestureDetector(
                               onTap: () {
                                 widget.pageController.animateToPage(1,
@@ -127,7 +141,6 @@ class _SignInScreenState extends State<SignInScreen> {
                               child: const SizedBox(
                                 child: Text('Sign Up',
                                     style: TextStyle(
-                                        color: Colors.black87,
                                         decoration: TextDecoration.underline,
                                         fontSize: 17)),
                               ),

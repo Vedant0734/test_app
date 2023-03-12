@@ -9,4 +9,8 @@ class LoadQuestionsEvent extends QuizEvent {
   LoadQuestionsEvent(this.quizId);
 }
 
-class SubmitQuiz extends QuizEvent {}
+class SubmitQuiz extends QuizEvent {
+  final List<Question> questions;
+  final bool isTerminated;
+  SubmitQuiz(this.questions, {this.isTerminated=false});
+}

@@ -1,5 +1,9 @@
+import 'package:bgi_test_app/business_logic/theme_cubit/cubit/theme_cubit.dart';
+import 'package:bgi_test_app/models/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'change_password.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -13,10 +17,6 @@ class _SettingsPageState extends State<SettingsPage> {
       fontSize: 16,
       fontWeight: FontWeight.w600,
       color: Color.fromARGB(255, 4, 8, 250));
-
-  bool lockAppSwitchVal = true;
-  bool fingerprintSwitchVal = false;
-  bool changePassSwitchVal = true;
 
   TextStyle headingStyleIOS = const TextStyle(
     fontWeight: FontWeight.w600,
@@ -38,73 +38,31 @@ class _SettingsPageState extends State<SettingsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Common",
-                    style: headingStyle,
-                  ),
-                ],
-              ),
-              const ListTile(
-                leading: Icon(Icons.language),
-                title: Text("Language"),
-                subtitle: Text("English"),
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text("Account", style: headingStyle),
-                ],
-              ),
-              const ListTile(
-                leading: Icon(Icons.phone),
-                title: Text("Phone Number"),
-              ),
-              const Divider(),
-              const ListTile(
-                leading: Icon(Icons.mail),
-                title: Text("Email"),
-              ),
-              const Divider(),
-              const ListTile(
-                leading: Icon(Icons.exit_to_app),
-                title: Text("Sign Out"),
-              ),
+              BlocBuilder<ThemeCubit, ThemeState>(
+                builder: (context, state) {
+                  return SwitchListTile(
+                    value: state.theme.currentTheme == CustomTheme.darkTheme, 
+                    title: const Text("Theme"),
+                    activeColor: Theme.of(context).primaryColor,
+                    subtitle: Text(state.theme.currentTheme == CustomTheme.darkTheme ? "Dark" : 
+                    "Light"),
+                    onChanged: (value) => context.read<ThemeCubit>().toggleTheme(),
+                  );
+                },
+              ),              
+              const Divider(),              
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text("Security", style: headingStyle),
                 ],
               ),
-              ListTile(
-                leading: const Icon(Icons.phonelink_lock_outlined),
-                title: const Text("Lock app in background"),
-                trailing: Switch(
-                    value: lockAppSwitchVal,
-                    activeColor: Color.fromARGB(255, 4, 8, 250),
-                    onChanged: (val) {
-                      setState(() {
-                        lockAppSwitchVal = val;
-                      });
-                    }),
-              ),
-              const Divider(),
-              
               const Divider(),
               ListTile(
                 leading: const Icon(Icons.lock),
                 title: const Text("Change Password"),
-                trailing: Switch(
-                    value: changePassSwitchVal,
-                    activeColor: Color.fromARGB(255, 4, 8, 250),
-                    onChanged: (val) {
-                      setState(() {
-                        changePassSwitchVal = val;
-                      });
-                    }),
+                trailing: Icon(Icons.chevron_right),
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePasswordScreen(),)),
               ),
               const ListTile(
                 leading: Icon(Icons.file_open_outlined),

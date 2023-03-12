@@ -2,11 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomTheme {
+
+  final ThemeData currentTheme; 
   static ThemeData lightTheme = ThemeData(
+    useMaterial3: true,
     brightness: Brightness.light,
+    visualDensity: VisualDensity.adaptivePlatformDensity,
+    primaryColor: Colors.blue,
+    primaryColorLight: Colors.blueAccent,
+    primaryColorDark: Colors.blueAccent.shade700,
+    appBarTheme: AppBarTheme(
+      backgroundColor: Colors.blue,
+
+    ),
+    dialogTheme: DialogTheme(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: Colors.blue.shade600,
+      shape: const CircleBorder(side: BorderSide.none),
+      enableFeedback: true,
+      focusElevation: 20.0,
+    ),
   );
 
   static ThemeData darkTheme = ThemeData(
+    visualDensity: VisualDensity.adaptivePlatformDensity,
     brightness: Brightness.dark,
     useMaterial3: true,
     primaryColor: const Color.fromARGB(255, 6, 35, 39),
@@ -36,6 +57,9 @@ class CustomTheme {
         color: Colors.blueGrey.shade50
       ),
     ),
+    dialogTheme: DialogTheme(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color.fromARGB(255, 12, 21, 25),
@@ -56,7 +80,7 @@ class CustomTheme {
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        backgroundColor: const Color(0xff28271E),
+        backgroundColor: const Color.fromARGB(255, 30, 40, 36),
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(7),
@@ -73,4 +97,6 @@ class CustomTheme {
       )
     )
   );
+
+  CustomTheme(this.currentTheme);
 }

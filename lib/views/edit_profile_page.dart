@@ -10,7 +10,6 @@
 // }
 
 // class _EditProfilePageState extends State<EditProfilePage> {
-//   User user = UserPreferences.myUser;
 
 //   @override
 //   Widget build(BuildContext context) => ThemeSwitchingArea(

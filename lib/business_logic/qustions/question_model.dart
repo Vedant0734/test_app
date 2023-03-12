@@ -7,7 +7,7 @@ class Question {
   final String option3;
   final String option4;
   final bool isAnswered;
-  final String? answeredOption;
+  final String? answer;
 
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(
@@ -28,6 +28,20 @@ class Question {
       required this.option2,
       required this.option3,
       required this.option4,
-      this.answeredOption,
+      this.answer,
       this.isAnswered = false});
+
+  Question copyWithAnswer(String newAnswer) {
+    return Question(
+      questionId: questionId, 
+      quizId: quizId, 
+      description: description,
+      option1: option1,
+      option2: option2,
+      option3: option3,
+      option4: option4,
+      answer: newAnswer,
+      isAnswered: true
+    );
+  }
 }

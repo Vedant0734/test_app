@@ -1,4 +1,4 @@
-import 'package:bgi_test_app/models/quiz.dart';
+import 'package:bgi_test_app/business_logic/quiz/quiz.dart';
 import '../enums/user_type.dart';
 
 class User {

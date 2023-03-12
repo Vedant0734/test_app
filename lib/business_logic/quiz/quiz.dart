@@ -27,6 +27,6 @@ class Quiz {
         deadLineOfSubmission: json["expire_date"] != null
             ? DateTime.parse(json["expire_date"])
             : null,
-        timeInSeconds: json["time"] ?? 10000);
+        timeInSeconds: json["time"] ?? 100);
   }
 }

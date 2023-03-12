@@ -26,7 +26,6 @@ class _SignUp extends State<SignUp> {
       create: (context) => SignUpBloc(),
       child: Builder(builder: (context) {
         return Scaffold(
-          // backgroundColor: Colors.white,
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
@@ -127,21 +126,17 @@ class _SignUp extends State<SignUp> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text('Already have and account? ',
-                              style: TextStyle(
-                                  color: Colors.black87, fontSize: 17)),
+                              style: TextStyle(fontSize: 17)),
                           GestureDetector(
                             onTap: () {
                               widget.pageController.animateToPage(0,
-                                  duration: Duration(seconds: 1),
+                                  duration: const Duration(seconds: 1),
                                   curve: Curves.bounceOut);
                             },
-                            child: Container(
-                              child: const Text('Sign In',
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      decoration: TextDecoration.underline,
-                                      fontSize: 17)),
-                            ),
+                            child: const Text('Sign In',
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 17)),
                           ),
                         ],
                       ),

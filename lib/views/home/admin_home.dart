@@ -1,4 +1,4 @@
-import 'package:bgi_test_app/models/quiz.dart';
+import 'package:bgi_test_app/business_logic/quiz/quiz.dart';
 import 'package:bgi_test_app/models/user.dart';
 import 'package:bgi_test_app/services/database.dart';
 import 'package:bgi_test_app/views/profile_page.dart';
@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import '../../helper/widgets/custom_drawer.dart';
 import '../create_quiz.dart';
 import '../../widget/widget.dart';
-
-// question(id int not null , qId int not null , descr varchar(1000) , opt1 varchar(100), opt2 varchar(100), opt3 varchar(100), opt4 varchar(100) , correct varchar(100))
 
 class AdminHome extends StatefulWidget {
   final User user;
@@ -80,55 +78,18 @@ class _AdminHomeState extends State<AdminHome> {
         //           );
         //       }
         //     })
-        // StreamBuilder(
-        //     stream: FirebaseFirestore.instance.collection('QUIZ').snapshots(),
-        //     builder: (context, snapshot) {
-        //       if (snapshot.hasData) {
-        //         for (var element in snapshot.data!.docs) {
-        //           print(element.data());
-        //         }
-
-        //         return ListView.builder(
-        //             shrinkWrap: true,
-        //             physics: const ClampingScrollPhysics(),
-        //             itemCount: snapshot.data!.docs.length,
-        //             itemBuilder: (context, index) {
-        //               return Column(
-        //                 children: [
-        //                   QuizTile(
-        //                     quiz: Quiz.fromJson(
-        //                         snapshot.data!.docs[index].data()),
-        //                   ),
-        //                   const SizedBox(
-        //                     height: 15.0,
-        //                   )
-        //                 ],
-        //               );
-        //             });
-        //       } else {
-        //         return Text("Fetching data");
-        //       }
-        //     })
+        
       ],
     );
   }
 
-  @override
-  // void initState() {
-    // databaseService.getQuizData().then((value) {
-    //   setState(() {});
-    // });
-    // super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: AppLogo(),
         elevation: 0.0,
-        backgroundColor: Colors.grey.shade300,
       ),
       drawer: ReusableDrawer(user: widget.user),
       body: quizList(),
@@ -136,7 +97,7 @@ class _AdminHomeState extends State<AdminHome> {
         child: const Icon(Icons.add),
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => CreateQuiz()));
+              context, MaterialPageRoute(builder: (context) => const CreateQuizScreen()));
         },
       ),
     );

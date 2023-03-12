@@ -22,13 +22,6 @@ class ReusableDrawer extends StatelessWidget {
               accountName:
                   Text(user.userName ),
               accountEmail: Text(user.phone )),
-
-          // const DrawerHeader(
-          //   decoration: BoxDecoration(
-          //     color: Colors.blue,
-          //   ),
-          //   child: Text('Help'),
-          // ),
           ListTile(
             leading: Icon(
               Icons.person,
@@ -42,19 +35,18 @@ class ReusableDrawer extends StatelessWidget {
                   ));
             },
           ),
-          // ListTile(
-          //   leading: Icon(
-          //     Icons.logout,
-          //   ),
-          //   title: const Text('Settings 1'),
-          //   onTap: () {
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) => SettingsPage(),
-          //         ));
-          //   },
-          // ),
+          ListTile(
+            leading: Icon(
+              Icons.settings,
+            ),
+            title: const Text('Settings'),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                route.settingspage,
+              );
+            },
+          ),
           ListTile(
             leading: Icon(
               Icons.logout,
@@ -65,18 +57,6 @@ class ReusableDrawer extends StatelessWidget {
                 context,
                 route.firstPage,
                 (route) => false,
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.settings,
-            ),
-            title: const Text('Settings'),
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                route.settingspage,
               );
             },
           ),

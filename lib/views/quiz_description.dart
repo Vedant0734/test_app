@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-import '../models/quiz.dart';
+import '../business_logic/quiz/quiz.dart';
 
 class QuizDescriptionScreen extends StatelessWidget {
   final Quiz quiz;

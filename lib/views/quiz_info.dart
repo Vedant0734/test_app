@@ -1,11 +1,10 @@
-import 'package:bgi_test_app/models/quiz.dart';
+import 'package:bgi_test_app/business_logic/quiz/quiz.dart';
 import 'package:bgi_test_app/views/quiz_play.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../business_logic/quiz/bloc/quiz_bloc.dart';
+import '../business_logic/quiz/warning_bloc/warning_bloc.dart';
 
 class QuizInfo extends StatelessWidget {
   final Quiz quiz;
@@ -14,7 +13,7 @@ class QuizInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => QuizBloc(),
+      create: (context) => QuizBloc(quiz: quiz),
       child: Builder(builder: (context) {
         return BlocListener<QuizBloc, QuizState>(
           listener: (context, state) {
@@ -37,9 +36,12 @@ class QuizInfo extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BlocProvider.value(
-                      value: quizBloc,
-                      child: QuizPlay(quiz: quiz, questions: state.questions),
+                    builder: (context) => BlocProvider(
+                      create: (context) => WarningBloc(),
+                      child: BlocProvider.value(
+                        value: quizBloc,
+                        child: QuizPlay(quiz: quiz, questions: state.questions),
+                      ),
                     ),
                   ));
             }
@@ -50,7 +52,7 @@ class QuizInfo extends StatelessWidget {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      context.read<QuizBloc>().add(LoadQuestionsEvent("1"));
+                      context.read<QuizBloc>().add(LoadQuestionsEvent(quiz.id));
                     },
                     child: const Text("Start quiz"))
               ],

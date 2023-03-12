@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart';
-
 import '../business_logic/errors/user_not_found.dart';
 
 class RemoteServerService {
@@ -28,5 +27,24 @@ class RemoteServerService {
 
   Future<Map<String, dynamic>> signUp(String uniqueId, String password) async {
     throw "oops";
+  }
+
+  Future changePassword(String userId, String currentPassword, String newPassword) async {
+    final reqBody =  jsonEncode({
+      "userId": userId, 
+      "current": currentPassword, 
+      "new": newPassword
+    });
+    //todo: change api url
+    Response response = await post(Uri.parse("$serverAddress/users/"),
+      headers: customHeaders,
+      body: reqBody
+    );
+
+    if(response.statusCode == 404){
+      throw UserNotFoundError(userId, currentPassword);
+    } else if(response.statusCode == 500){
+      throw "Server error";
+    }
   }
 } 
